@@ -4,6 +4,12 @@ import requests
 import json
 import time
 import threading
+import datetime
+
+
+def print_log(msg: str):
+    current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    print(f"[{current_time}]: {msg}")
 
 
 class Monitor:
@@ -27,7 +33,7 @@ class Monitor:
         if req.status_code == 200:
             return req.json()
         else:
-            print(f"ERROR GETTING PRODUCT DATA - STATUS CODE: {req.status_code}")
+            print_log(f"ERROR GETTING PRODUCT DATA - STATUS CODE: {req.status_code}")
 
     @staticmethod
     def parse_data(product_id, json_data) -> list:
@@ -41,6 +47,7 @@ class Monitor:
             avi = store_data['partsAvailability'][product_id]['pickupDisplay']
 
             if avi != "unavailable":
+                print_log(f"SKU ({product_id}) has stock been found")
                 return_list.append((store_name, store_address, store_phone_email, product_id))
 
         return return_list
@@ -75,12 +82,12 @@ class Monitor:
     def start_threads(self):
         running_thread = []
         for product_id in self.product_list:
-            print(f"LOADING UP PRODUCT ID [{product_id}] - {self.product_list[product_id]}")
+            print_log(f"LOADING UP PRODUCT ID [{product_id}] - {self.product_list[product_id]}")
             task_thread = threading.Thread(target=self.start_monitor, args=(product_id,))
             task_thread.start()
             running_thread.append(task_thread)
 
-        print("ALL PRODUCTS LOADED UP AND MONITORING!")
+        print_log("ALL PRODUCTS LOADED UP AND MONITORING!")
 
         for thread in running_thread:
             thread.join()
