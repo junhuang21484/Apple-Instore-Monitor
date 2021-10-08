@@ -75,6 +75,7 @@ class Monitor:
     def start_threads(self):
         running_thread = []
         for product_id in self.product_list:
+            print(f"LOADING UP PRODUCT ID [{product_id}] - {self.product_list[product_id]}")
             task_thread = threading.Thread(target=self.start_monitor, args=(product_id,))
             task_thread.start()
             running_thread.append(task_thread)
