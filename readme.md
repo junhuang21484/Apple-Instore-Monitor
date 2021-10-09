@@ -31,6 +31,9 @@ to one near you)
 ```
 1. Store id searching via Zip Code/Store Name
 2. Product ID auto look up
+3. Better discord notification with auto item url etc.
+4. Sound and desktop notifications for Windows
+5. More flexible control over monitor_data.json
 ```
 
 ### Discord Notification Example
