@@ -14,8 +14,12 @@ You can add your own product, as long as you have the product id.
 ### Monitor Data - Setting
 ```
 Delay - The time the monitor will wait inside each thread for each product
+Item cooldown - The time where an item and store will get removed from the cooldown list
 Webhook - The webhook url of your discord, the bot will send notifications to this url
 Store near - The store id where you want to monitor. It will also monitor nearby stores
+Notification Settings:
+- Desktop (True if you want to get desktop notifications)
+- Sound (True if you want to get sound notifications) [Currently not supported]
 ```
 
 ### Installation
@@ -32,8 +36,9 @@ to one near you)
 1. Store id searching via Zip Code/Store Name
 2. Product ID auto look up
 3. Better discord notification with auto item url etc.
-4. Sound and desktop notifications for Windows
-5. More flexible control over monitor_data.json
+4. Sound notifications for Windows
+5. Desktop notifications for Windows
+6. More flexible control over monitor_data.json
 ```
 
 ### Discord Notification Example
