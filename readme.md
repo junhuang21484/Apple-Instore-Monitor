@@ -34,4 +34,4 @@ to one near you)
 ```
 
 ### Discord Notification Example
-![This is a picture of discord notification example]()
+![This is a picture of discord notification example](https://media.discordapp.net/attachments/895816713554235513/896186072613138502/unknown.png)
