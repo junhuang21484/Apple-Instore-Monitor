@@ -35,8 +35,8 @@ class Monitor:
         req = requests.get(req_url, headers=self.header)
         if req.status_code == 200:
             return req.json()
-        else:
-            print_log(f"ERROR GETTING PRODUCT DATA - STATUS CODE: {req.status_code}")
+
+        return {}
 
     def parse_data(self, product_id, json_data) -> list:
         return_list = []
@@ -74,7 +74,7 @@ class Monitor:
                             f"{store_phone_email}",
                             inline=False)
 
-            self.webhook.send(embed=embed)
+            self.webhook.send(content="@everyone", embed=embed)
 
     def send_desktop_notification(self, avi_list: list):
         for store_avi in avi_list:
@@ -97,11 +97,12 @@ class Monitor:
     def start_monitor(self, product_id):
         while True:
             json_data = self.get_data(product_id)
-            parse_data = self.parse_data(product_id, json_data)
-            self.send_embed(parse_data)
+            if json_data:
+                parse_data = self.parse_data(product_id, json_data)
+                self.send_embed(parse_data)
 
-            if self.setting['notifications']['desktop']:
-                self.send_desktop_notification(parse_data)
+                if self.setting['notifications']['desktop']:
+                    self.send_desktop_notification(parse_data)
 
             time.sleep(self.setting['delay'])
 
