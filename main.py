@@ -1,4 +1,5 @@
 from dhooks import Webhook, Embed
+from pynotifier import Notification
 
 import requests
 import json
@@ -27,6 +28,8 @@ class Monitor:
             "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.71 Safari/537.36 Edg/94.0.992.38"
         }
 
+        self.cooldown_list = []
+
     def get_data(self, product_id: str) -> dict:
         req_url = f"https://www.apple.com/shop/fulfillment-messages?pl=true&mt=compact&cppart=UNLOCKED/US&parts.0={product_id}&searchNearby=true&store={self.setting['store_near']}"
         req = requests.get(req_url, headers=self.header)
@@ -35,8 +38,7 @@ class Monitor:
         else:
             print_log(f"ERROR GETTING PRODUCT DATA - STATUS CODE: {req.status_code}")
 
-    @staticmethod
-    def parse_data(product_id, json_data) -> list:
+    def parse_data(self, product_id, json_data) -> list:
         return_list = []
         all_store_data = json_data['body']['content']['pickupMessage']['stores']
         for store_data in all_store_data:
@@ -47,8 +49,10 @@ class Monitor:
             avi = store_data['partsAvailability'][product_id]['pickupDisplay']
 
             if avi != "unavailable":
-                print_log(f"SKU ({product_id}) has stock been found")
-                return_list.append((store_name, store_address, store_phone_email, product_id))
+                if (product_id, store_name) not in self.cooldown_list:
+                    print_log(f"SKU ({product_id}) has stock been found")
+                    return_list.append((store_name, store_address, store_phone_email, product_id))
+                    self.cooldown_list.append((product_id, store_name))
 
         return return_list
 
@@ -72,15 +76,42 @@ class Monitor:
 
             self.webhook.send(embed=embed)
 
+    def send_desktop_notification(self, avi_list: list):
+        for store_avi in avi_list:
+            store_name = store_avi[0]
+            product_id = store_avi[-1]
+            product_name = self.product_list[product_id]
+
+            Notification(
+                title=product_name + f" [{product_id}]",
+                description=f'Store: {store_name}',
+                duration=3,
+                urgency='normal'
+            ).send()
+
+    def remove_cool_down_item(self):
+        while True:
+            self.cooldown_list = []
+            time.sleep(self.setting['item_cooldown'])
+
     def start_monitor(self, product_id):
         while True:
             json_data = self.get_data(product_id)
             parse_data = self.parse_data(product_id, json_data)
             self.send_embed(parse_data)
+
+            if self.setting['notifications']['desktop']:
+                self.send_desktop_notification(parse_data)
+
             time.sleep(self.setting['delay'])
 
     def start_threads(self):
         running_thread = []
+
+        t = threading.Thread(target=self.remove_cool_down_item)
+        t.start()
+        print_log("Starting cooldown remover")
+
         for product_id in self.product_list:
             print_log(f"LOADING UP PRODUCT ID [{product_id}] - {self.product_list[product_id]}")
             task_thread = threading.Thread(target=self.start_monitor, args=(product_id,))
@@ -89,6 +120,7 @@ class Monitor:
 
         print_log("ALL PRODUCTS LOADED UP AND MONITORING!")
 
+        t.join()
         for thread in running_thread:
             thread.join()
 
