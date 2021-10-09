@@ -18,13 +18,19 @@ Webhook - The webhook url of your discord, the bot will send notifications to th
 Store near - The store id where you want to monitor. It will also monitor nearby stores
 ```
 
-###Installation
+### Installation
 ```
 1. Download the code from the repo
 2. In CMD run pip install -r requirements.txt to install all the requirements
 3. Configure monitor_data.json to your need (You must add a webhook url, and change the store 
 to one near you)
 4. Run main.py to start monitoring
+```
+
+### To be added
+```
+1. Store id searching via Zip Code/Store Name
+2. Product ID auto look up
 ```
 
 ### Discord Notification Example
