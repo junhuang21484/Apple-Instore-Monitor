@@ -50,7 +50,7 @@ class Monitor:
 
             if avi != "unavailable":
                 if (product_id, store_name) not in self.cooldown_list:
-                    print_log(f"SKU ({product_id}) has stock been found")
+                    print_log(f"{self.product_list[product_id]} ({product_id}) has stock been found")
                     return_list.append((store_name, store_address, store_phone_email, product_id))
                     self.cooldown_list.append((product_id, store_name))
 
@@ -82,12 +82,15 @@ class Monitor:
             product_id = store_avi[-1]
             product_name = self.product_list[product_id]
 
-            Notification(
-                title=product_name + f" [{product_id}]",
-                description=f'Store: {store_name}',
-                duration=3,
-                urgency='normal'
-            ).send()
+            try:
+                Notification(
+                    title=product_name + f" [{product_id}]",
+                    description=f'Store: {store_name}',
+                    duration=3,
+                    urgency='normal'
+                ).send()
+            except AttributeError:
+                print_log("Error sending desktop notification")
 
     def remove_cool_down_item(self):
         while True:
