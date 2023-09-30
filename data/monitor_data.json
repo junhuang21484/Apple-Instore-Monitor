@@ -1,0 +1,26 @@
+{
+  "product_list": {
+    "MU683LL/A": "iPhone 15 Pro Max Natural (256 GB)",
+    "MU693LL/A": "iPhone 15 Pro Max Blue (256 GB)",
+    "MU673LL/A": "iPhone 15 Pro Max White (256 GB)",
+    "MU663LL/A": "iPhone 15 Pro Max Black (256 GB)"
+  },
+  "monitor": {
+    "delay": {
+      "error_delay": 60,
+      "monitor_delay": 10,
+      "load_up_delay": 2
+    },
+    "near_zip": "change to your zip code",
+    "use_proxy": false
+  },
+  "notifications": {
+    "discord": {
+      "on": false,
+      "webhook": ""
+    },
+    "desktop": {
+      "on": false
+    }
+  }
+}
