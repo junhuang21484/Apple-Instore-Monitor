@@ -8,16 +8,17 @@
   "monitor": {
     "delay": {
       "error_delay": 60,
-      "monitor_delay": 10,
+      "monitor_delay": 8,
       "load_up_delay": 2
     },
-    "near_zip": "change to your zip code",
+    "near_zip": "input your zipcode here",
     "use_proxy": false
   },
   "notifications": {
     "discord": {
       "on": false,
-      "webhook": ""
+      "webhook": "",
+      "mention_all": false
     },
     "desktop": {
       "on": false

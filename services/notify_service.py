@@ -26,7 +26,8 @@ class NotifyService:
             }
 
             webhook = self.setting['discord']['webhook']
-            req = requests.post(webhook, json={'embeds': [embed_data]})
+            msg = "@everyone" if self.setting['discord']['mention_all'] else ""
+            req = requests.post(webhook, json={'content': msg, 'embeds': [embed_data]})
             if req.status_code != 204:
                 logging.info("Error sending discord notification")
 
@@ -50,5 +51,3 @@ class NotifyService:
 
         if self.setting["desktop"]["on"]:
             self.send_desktop_notification(avi_list, product_name)
-
-
