@@ -1,10 +1,12 @@
 import logging
-import random
+import threading
 
 
 class ProxyService:
     def __init__(self):
         self.proxies_list = self.load_proxies()
+        self._proxy_id = 0
+        self._id_lock = threading.Lock()
 
     def load_proxies(self):
         proxies_list = []
@@ -16,7 +18,7 @@ class ProxyService:
                 proxy_parts = proxy.split(":")
 
                 if len(proxy_parts) == 2:  # IP:Port proxy
-                    pass
+                    proxies_list.append(f"http://{proxy_parts[0]}:{proxy_parts[1]}")
                 elif len(proxy_parts) == 4:  # IP:PORT:USER:AUTH proxy
                     proxies_list.append(f"http://{proxy_parts[2]}:{proxy_parts[3]}@{proxy_parts[0]}:{proxy_parts[1]}")
 
@@ -24,4 +26,10 @@ class ProxyService:
         return proxies_list
 
     def get_proxy(self):
-        return random.choice(self.proxies_list)
+        # Thread safe round robin
+        with self._id_lock:
+            if not self.proxies_list:
+                raise RuntimeError("No valid proxies are loaded")
+            proxy = self.proxies_list[self._proxy_id]
+            self._proxy_id = (self._proxy_id + 1) % len(self.proxies_list)
+            return proxy

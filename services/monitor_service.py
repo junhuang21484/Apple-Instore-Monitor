@@ -19,7 +19,6 @@ class MonitorService:
         self.error_event = threading.Event()
         self.error_event.clear()
         self.on_error = False
-        self.error_remove_run = False
 
     def reset_error(self, error_delay):
         self.error_event.set()
@@ -31,7 +30,7 @@ class MonitorService:
     def monitor_task(self, product_id, error_delay, monitor_delay):
         near_zip = self.setting['near_zip']
         product_name = self.product_list[product_id]
-        task_proxy = self.proxy_service.get_proxy() if self.setting['use_proxy'] else {}
+        task_proxy = self.proxy_service.get_proxy() if self.setting['use_proxy'] else None
         while True:
             if not self.on_error:
                 status_code, json_data = self.apple_service.get_data(product_id, near_zip, task_proxy)

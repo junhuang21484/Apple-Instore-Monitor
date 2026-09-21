@@ -1,1 +1,5 @@
 old_main.py
+.idea/
+*.pyc
+temp.txt
+local-dev/
